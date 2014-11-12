@@ -1,6 +1,6 @@
 php_bbs
 =======
 
-a simple php program of bbs~!
+a simple php program of bbs~!·[可以在sae上看看效果][href]~!
 
-['a simple bbs online']:"http://homker.sinaapp.com"
+[href]:"http://homker.sinaapp.com"
