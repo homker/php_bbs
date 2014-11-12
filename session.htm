@@ -1,0 +1,194 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>讨论话题</title>
+<style type="text/css">
+	.floatl{float:left;}
+	.floatr{float:right;}
+	.clear{clear:both;}
+	.title{ padding-left:100px; margin-top:5px;}
+	.width{ width:350px;}
+	.margintop{ margin-top:10px;}
+	.marginleft{ margin-left:50px;}
+	.marginright{ margin-right:300px;}
+		.submit{ margin:10px 0 0 500px;}
+		textarea{width:490px; height:50px;}
+	.content{ margin:0 auto; width:908px;}
+		p{font-size:20px;}
+		div{font-size: 14px;}
+		.backcontent{width: 473px;}
+        .top{ position:fixed; border:1px solid black; text-decoration: none; top:500px; left:1200px;}
+        .center{ height: 100%;overflow-x: hidden;}
+		.footer{ margin-bottom:15px;}
+    ul li{list-style: none;}
+    .back{display:none; float:left;}
+	.backs{display:none;float:left;}
+</style>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.0/jquery.min.js"></script>
+</head>
+
+<body>
+	<?php include 'head.php' ?>
+   <!--查看留言部分-->
+  <div class="center">
+   <a href="#top" class="top"> top </a>
+   <div class="content margintop">
+   <fieldset>
+   		<legend>查看话题</legend>
+        <div class="session">
+        		<?php 
+        			while($result=mysql_fetch_array($stcontent))
+        			{
+        		?>
+        		<fieldset>
+            		<legend><?php echo $result['UName']?>说：</legend>
+                	<p><?php echo $result['Title']?></p>
+                	<div class="marginright floatl marginleft"><?php echo $result['Content']?></div>
+                	<span class="submit">回帖数<?php echo $click=$result['Click']?></span><span class="marginleft">时间：<?php echo $result['Time']?></span>
+                	<a href="list.php">回到列表</a>
+            	</fieldset>
+            	<?php } ?>
+              
+            	<ol>
+            		<?php
+            		//var_dump($sscontent);
+            		while($sresult=mysql_fetch_array($sscontent))
+            		{
+            		?>
+            		<li class="margintop">
+            			<span><?php echo $sresult['UserName']?>说：<?php echo $sresult['Content']?>
+                        <a href="javascript:;" class="backDisplay">回复</a>
+                  </span><span class="floatr"><?php echo $sresult['Time']?></span>
+                  <form action="session.php?ID=<?php echo $ID ?>" method="post" name="dsesssion">
+                    <input type="text" name="ds_content" class="ds_content back">
+                    <input type="hidden" value="<?php echo $sresult['ID'] ?>" name="ds_ID">
+                    <input type="hidden" value="<?php echo $sresult['UserName'] ?>" name="ds_Name">
+                    <input class="back" type="submit" name="ds_submit" value="回复"/>
+            		  </form>
+                      <div class="clear"></div>
+                  <ul>
+                  <?php 
+                    $dbname="dssession";
+                    $ds_session=new db($dbname);
+                    $ds_IDs=$sresult['ID'];
+                    $ds_sscontent=$ds_session->fetch($value="*",$IDs="ContentID=$ds_IDs");
+                    while($ds_sresult=mysql_fetch_array($ds_sscontent))
+                    {
+                    ?>
+                    <li>
+                      <span>
+                      		<?php echo $ds_sresult['UserName']?>对<?php echo $ds_sresult['ToName']?>说：<?php echo $ds_sresult['Content']?>
+                        	<a href="javascript:;" class="backDisplays">回复</a>
+                      </span>
+                      <span class="floatr"><?php echo $ds_sresult['Time']?></span>
+                      <form  action="session.php?ID=<?php echo $ID ?>" method="post" name="dsesssion">
+                          <input type="text" name="ds_content" class="ds_content backs">
+                          <input type="hidden" value="<?php echo $sresult['ID'] ?>" name="ds_ID">
+                          <input type="hidden" value="<?php echo $ds_sresult['UserName'] ?>" name="ds_Name">
+                          <input type="submit" name="ds_submit" value="回复" class="backs"/>
+                        </form>
+                         <div class="clear"></div>
+                    </li>
+                  <?php } ?>
+                  </ul>
+                  
+                </li>
+            		<?php } ?>
+            	</ol>
+        </div>
+   </fieldset>
+   </div>
+   <!--发表留言部分-->
+	<form class="content" action="session.php?ID=<?php echo $ID ?>" method="post" onsubmit="return chenck();" name="session">
+    	<fieldset>
+        <legend>我说：</legend>
+        <div class="title">
+			<span class="floatl">回复内容：</span><input class="floatl width backcontent" type="text" name="scontent" /><br/>
+			<input class="clear floatl submit" type="submit" name="ssubmit" value="回复"/>
+        </div>
+        </fieldset>
+	</form>
+</div>
+   <?php include 'footer.php' ?>
+</body>
+</html>
+<script type="text/javascript">
+		var footercss={position:'absolute',bottom:'0px',background:'#FFF',width:'99%'};
+		var topcss={display:'none'};
+		var backcss={display:'block'};
+	function chenck()
+	{
+		if(session.scontent.value=="")
+			{
+				alert("话题内容不得为空");
+				session.scontent.focus();
+				return false;
+			}
+	}
+  $(document).ready(
+    function()
+    {
+      if ($(".center").height()<=550) 
+      {
+		
+		$(".footer").css(footercss);
+		$(".top").css(topcss);
+        //$(".footer").style.position="absolute";
+        //$(".footer").style.buttom="0";
+      };
+	  var num=1;
+	   $(".backDisplay").click(
+	   		function(){
+				if(num) 
+				{
+					$(this).parent().parent().find(".back").css(backcss);
+					num=0;
+				}else{
+					$(this).parent().parent().find(".back").css(topcss);
+					num=1;
+					}
+  		});
+		$(".backDisplays").click(
+	   		function(){
+				if(num) 
+				{
+					
+					$(this).parent().parent().find(".backs").css(backcss);
+					num=0;
+				}else{
+					$(this).parent().parent().find(".backs").css(topcss);
+					num=1;
+					}
+  		});
+		/* $(".backDisplays").click(
+	   		function(){
+   	 	$(this).parent().parent().find(".backs").css(backcss);
+  		});
+		
+	  var num=1;
+	   var Comment_num=getClassName('commentNumber')[0];
+	   $(".back").onclick=function (){
+		 if(num){
+			   $(".back")[0].style.display="block";
+			   $(".back")[1].style.display="block";
+			   num=0;
+			 }
+			 else
+			 	{
+					$(".back")[0].style.display="none";
+			   		$(".back")[1].style.display="none";
+					num=1;
+					}	
+		}*/
+		/*var ok=0;
+		
+		$("input").focus(function(){
+			ok=1;
+		});
+		$("input").blur(function(){
+			ok=0;
+		});
+		if(ok==0) setInterval('window.location.reload();',1000);*/	
+    });
+</script>

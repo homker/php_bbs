@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>后台操作</title>
+<style type="text/css">
+	.floatl{float:left;}
+	.floatr{float:right;}
+	.clear{clear:both;}
+	.title{ padding-left:100px; margin-top:5px;}
+	.width{ width:350px;}
+	.margintop{ margin-top:10px;}
+	.marginleft{ margin-left:50px;}
+	.marginleft_s{ margin-left:10px;}
+	.marginright{ margin-right:300px;}
+		.submit{ margin:10px 0 0 500px;}
+		textarea{width:490px; height:50px;}
+	.content{ margin:0 auto; width:908px;}
+	li{list-style: none;}
+		p{font-size:20px;}
+		div{font-size: 14px;}
+		.backcontent{width: 473px;}
+      .top{ position:fixed; border:1px solid black; text-decoration: none; top:500px; left:1200px;}
+</style>
+</head>
+
+<body>
+	<?php include 'head.php' ?>
+   <a href="#top" class="top"> top </a>
+   <!--查看留言部分-->
+   <div class="content margintop">
+   <fieldset>
+   		<legend>查看话题</legend>
+        <div class="session">
+        		<?php 
+                	$bgstcontent=$bglist->fetch();
+        			while($result=mysql_fetch_array($bgstcontent))
+        			{
+                    $ID=$result['ID'];
+                    $IDs="ContentID=$ID";
+        		?>
+        		<fieldset>
+            		<legend><?php echo $result['UName']?>说：</legend>
+                	<p><?php echo $result['Title']?></p>
+                	<div class="marginright floatl marginleft"><?php echo $result['Content']?></div>
+                	<span class="submit">回帖数<?php echo $click=$result['Click']?></span><span class="marginleft">时间：<?php echo $result['Time']?></span>
+                    <a class="marginleft_s" href="?ID=<?php echo $ID ?>">删除</a>
+            	</fieldset>
+            	<ul>
+            		<?php
+            		//var_dump($sscontent);
+                    $value="*";
+                    $bgsscontent=$bgsession->fetch($value,$IDs);
+            		while($sresult=mysql_fetch_array($bgsscontent))
+            		{
+                    	$SID=$sresult['ID'];
+            		?>
+            		<li>
+            			<span><?php echo $sresult['UserName']?>说：<?php echo $sresult['Content']?></span>
+                         <a class="floatr marginleft_s" href="?SID=<?php echo $SID ?>">删除</a>
+                        <span class="floatr"><?php echo $sresult['Time']?></span>
+                       
+            		</li>
+            		<?php } ?>
+            	</ul>
+              <?php } ?>
+        </div>
+   </fieldset>
+   </div>
+   <!--发表留言部分-->
+   <?php include 'footer.php' ?>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv=refresh content="60">
+<title>查看话题</title>
+<style type="text/css">
+	.floatl{float:left;}
+	.clear{clear:both;}
+	.title{ padding-left:100px; margin-top:5px;}
+	.width{ width:350px;}
+	.margintop{ margin-top:10px;}
+	.marginleft{ margin-left:50px;}
+	.marginright{ margin-right:300px;}
+		.submit{ margin:10px 0 0 500px;}
+		textarea{width:490px; height:50px;}
+	.content{ margin:0 auto; width:908px;}
+		.top{ position:fixed; border:1px solid black; text-decoration: none; top:500px; left:1200px;}
+		.center{height: 100%;}
+			.backlist{display: none;}
+	li{list-style: none;}
+</style>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.0/jquery.min.js"></script>
+</head>
+
+<body>
+	<?php include 'head.php' ?>
+	<!--发表留言部分-->
+	<div class="center">
+	<a href="#top" class="top"> top </a>
+	<form class="content" action="list.php" method="post" onsubmit="return chenck();" name="title">
+    	<fieldset>
+        <legend>发表话题</legend>
+        <div class="title">
+			<span class="floatl">发布话题：</span><input class="floatl width marginright" type="text" name="tcontent" /><br/>
+			<span class="floatl margintop">话题详述：</span><textarea class="floatl margintop" name="content" cols="50" rows="3"></textarea>
+            <br/>
+			<input class="clear floatl submit" type="submit" name="tsubmit" value="发布话题"/>
+        </div>
+        </fieldset>
+	</form>
+   <!--查看留言部分-->
+   <div class="content margintop">
+   <fieldset>
+   		<legend>查看话题</legend>
+        <div class="session">
+        	<ul>
+        		<?php 
+        			while($result=mysql_fetch_array($fcontent)){
+        		?>
+        		<li>
+        		<fieldset>
+            		<legend><?php echo $result['UName']?>说：</legend>
+                	<a class="marginleft" href="session.php?ID=<?php echo $result['ID'] ?>"><?php echo $result['Title']?></a><br/>
+                	<span class="submit">回帖数<?php echo $result['Click']?></span>&nbsp;&nbsp;<span>时间<?php echo $result['Time']?></span>
+            	</fieldset>
+            	</li>
+            	<?php } ?>
+        	</ul>
+        </div>
+   </fieldset>
+   </div>
+  </div>
+    <?php include 'footer.php' ?>
+</body>
+
+</html>
+<script type="text/javascript">
+	function chenck()
+	{
+		if(title.tcontent.value=="")
+			{
+				alert("话题内容不得为空");
+				title.tcontent.focus();
+				return false;
+			}
+			if(title.content.value=="")
+			{
+				alert("内容不得为空");
+				title.content.focus();
+				return false;
+			}
+	}
+	$(document).ready(
+		function()
+		{
+			if ($(".center").height()<=550) 
+      		{
+			var footercss={position:'absolute',bottom:'0px',background:'#FFF',width:'99%'};
+			var topcss={display:'none'};
+ 		 	$(".footer").css(footercss);
+			$(".top").css(topcss);
+ 	
+
+ 		 	}
+		});
+</script>
